@@ -1,6 +1,8 @@
 # 择要
 
-- Lede=18.06=5.4    Lienol=19.07=4.14   Project=21.02=5.4
+- Lede=18.06=5.4
+- Lienol=19.07=4.14
+- Project=21.02=5.4
 
 - 《[把定时更新插件编译进固件的说明](https://github.com/danshui-git/shuoming/blob/master/%E5%AE%9A%E6%97%B6%E6%9B%B4%E6%96%B0%E6%8F%92%E4%BB%B6.md)》
 
