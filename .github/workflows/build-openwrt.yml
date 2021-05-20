@@ -98,7 +98,9 @@ jobs:
     - name: 整理脚本
       run: |
         cp -Rf `find ./ -maxdepth 1 -type d ! -path './openwrt' ! -path './'` openwrt
-        cp -Rf "${GITHUB_WORKSPACE}/build/common"/*.sh "${PATH1}"
+        mv -f build/common/Convert.sh "${Home}/package"
+        chmod -R +x "${Home}/package/Convert.sh"
+        mv -f build/common/*.sh "${PATH1}"
         chmod -R +x "${PATH1}"
         source "${PATH1}/common.sh" && Diy_settings
         rm -rf {build,README.md}
