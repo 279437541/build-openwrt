@@ -237,13 +237,13 @@ case "${REPO_BRANCH}" in
 "21.02")
 	echo "Start to convert zh-cn translation files to zh_Hans ..."
 	cd ./package
-	bash ./Convert_zh-cn.sh
+	bash ./Convert.sh
 	cd ../
 ;;
 "openwrt-21.02") 
 	echo "Start to convert zh-cn translation files to zh_Hans ..."
 	cd ./package
-	bash ./Convert_zh-cn.sh
+	bash ./Convert.sh
 	cd ../
 ;;
 esac
