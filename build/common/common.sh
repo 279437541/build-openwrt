@@ -216,7 +216,7 @@ fi
 
 
 ################################################################################################################
-# 判断是否选择AdGuard Home是就指定机型给内核
+# 为编译做最后处理
 
 Diy_adgu() {
 DIY_GET_COMMON_SH
@@ -233,7 +233,20 @@ if [ `grep -c "CONFIG_TARGET_x86_64=y" ${Home}/.config` -eq '1' ]; then
 else
 	TARGET_ADG="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" .config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
 fi
-
+case "${REPO_BRANCH}" in
+"21.02")
+	echo "Start to convert zh-cn translation files to zh_Hans ..."
+	cd ./package
+	bash ./Convert_zh-cn.sh
+	cd ../
+;;
+"openwrt-21.02") 
+	echo "Start to convert zh-cn translation files to zh_Hans ..."
+	cd ./package
+	bash ./Convert_zh-cn.sh
+	cd ../
+;;
+esac
 rm -rf {LICENSE,README,README.md,CONTRIBUTED.md,README_EN.md}
 rm -rf ./*/{LICENSE,README,README.md}
 rm -rf ./*/*/{LICENSE,README,README.md}
