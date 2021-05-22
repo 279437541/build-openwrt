@@ -239,17 +239,12 @@ Diy_adgu() {
 DIY_GET_COMMON_SH
 grep -i CONFIG_PACKAGE_luci-app .config | grep  -v \# > Plug-in
 grep -i CONFIG_PACKAGE_luci-theme .config | grep  -v \# >> Plug-in
-sed -i "s/=y//g" Plug-in
-sed -i "s/CONFIG_PACKAGE_//g" Plug-in
-sed -i '/INCLUDE/d' Plug-in > /dev/null 2>&1
-cat -n Plug-in > Plugin
-sed -i 's/	luci/、luci/g' Plugin
-awk '{print "  " $0}' Plugin > Plug-in
-if [ `grep -c "CONFIG_TARGET_x86_64=y" ${Home}/.config` -eq '1' ]; then
-	TARGET_ADG="x86-64"
-else
-	TARGET_ADG="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" .config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
-fi
+awk '$0=NR$0' Plug-in > Plug-2
+sed -i '/INCLUDE/d' Plug-2 > /dev/null 2>&1
+sed -i 's/CONFIG_PACKAGE_/、/g' Plug-2
+sed -i 's/=y/\"/g' Plug-2
+awk '{print "	" $0}' Plug-2 > Plug-in
+sed -i "s/^/TIME g \"/g" Plug-in
 rm -rf {LICENSE,README,README.md,CONTRIBUTED.md,README_EN.md}
 rm -rf ./*/{LICENSE,README,README.md}
 rm -rf ./*/*/{LICENSE,README,README.md}
@@ -323,23 +318,24 @@ if [[ ${SSHYC} == "true" ]]; then
 	TIME y "SSH远程连接临时开关: 开启"
 fi
 if [[ ${REGULAR_UPDATE} == "true" ]]; then
-	echo
 	TIME y "把定时自动更新插件编译进固件: 开启"
-	TIME z "插件版本: ${AutoUpdate_Version}"
-	TIME l "固件名称: ${Firmware_mz}"
-	TIME l "固件后缀: ${Firmware_hz}"
-	TIME l "固件版本: ${Openwrt_Version}"
-	TIME l "云端路径: ${Github_UP_RELEASE}"
-	TIME g "《编译成功，会自动把固件发布到指定地址，然后才会生成云端路径》"
-	TIME g "《5.0版本跟5.2版本的检测机制不一样，首次编译完5.2版本的请手动安装5.2版本编译的固件》"
-	TIME g "《普通的那个发布固件跟云端的发布路径是两码事，如果你不需要普通发布的可以不用打开发布功能》"
-	TIME g "《请把“REPO_TOKEN”密匙设置好,没设置好密匙不能发布就生成不了云端地址》"
-	TIME g "《x86-64、phicomm_k2p、phicomm-k3、newifi-d2已自动适配固件名字跟后缀，无需自行设置》"
-	TIME g "《x86设置安装固件时候请最少分配2G内存，要不然内存太低，自动更新不了》"
-	TIME g "《如有其他机子可以用定时更新固件的话，请告诉我，我把固件名字跟后缀适配了》"
-	echo
 else
 	TIME r "把定时自动更新插件编译进固件: 关闭"
+fi
+if [[ ${REGULAR_UPDATE} == "true" ]]; then
+	echo
+	TIME l "定时自动更新信息"
+	TIME z "插件版本: ${AutoUpdate_Version}"
+	TIME b "固件名称: ${Firmware_mz}"
+	TIME b "固件后缀: ${Firmware_hz}"
+	TIME b "固件版本: ${Openwrt_Version}"
+	TIME b "云端路径: ${Github_UP_RELEASE}"
+	TIME g "《编译成功，会自动把固件发布到指定地址，然后才会生成云端路径》"
+	TIME g "《普通的那个发布固件跟云端的发布路径是两码事，如果你不需要普通发布的可以不用打开发布功能》"
+	TIME g "《请把“REPO_TOKEN”密匙设置好,没设置好密匙不能发布就生成不了云端地址》"
+	TIME g "《只支持已自动适配固件名字跟后缀机型（x86-64、phicomm_k2p、phicomm-k3、newifi-d2），其他机型请自行适配》"
+	echo
+else
 	echo
 fi
 if [ -n "$(ls -A "${Home}/EXT4" 2>/dev/null)" ]; then
@@ -354,12 +350,14 @@ if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ]; then
 	echo
 	chmod -R +x ${Home}/CHONGTU
 	source ${Home}/CHONGTU
+	rm -rf {CHONGTU,Chajianlibiao}
 fi
 if [ -n "$(ls -A "${Home}/Plug-in" 2>/dev/null)" ]; then
 	echo
-	TIME b "	  已选插件列表"
-	[ -s Plug-in ] && cat Plug-in
+	TIME r "	      已选插件列表"
+	chmod -R +x ${Home}/Plug-in
+	source ${Home}/Plug-in
+	rm -rf {Plug-in,Plug-2}
 	echo
 fi
-rm -rf {CHONGTU,Plug-in,Plugin,Chajianlibiao}
 }
