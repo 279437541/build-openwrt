@@ -16,9 +16,9 @@ echo -e "\nsrc-git danshui https://github.com/281677160/openwrt-package.git;$REP
 mv "${PATH1}"/AutoBuild_Tools.sh package/base-files/files/bin
 chmod +x package/base-files/files/bin/AutoBuild_Tools.sh
 if [[ ${REGULAR_UPDATE} == "true" ]]; then
-git clone https://github.com/281677160/luci-app-autoupdate package/luci-app-autoupdate
-mv "${PATH1}"/AutoUpdate.sh package/base-files/files/bin
-chmod +x package/base-files/files/bin/AutoUpdate.sh
+	git clone https://github.com/281677160/luci-app-autoupdate package/luci-app-autoupdate
+	mv "${PATH1}"/AutoUpdate.sh package/base-files/files/bin
+	chmod +x package/base-files/files/bin/AutoUpdate.sh
 fi
 }
 
@@ -112,6 +112,23 @@ curl -fsSL https://raw.githubusercontent.com/281677160/AdGuardHome/main/luci-app
 curl -fsSL https://raw.githubusercontent.com/281677160/AdGuardHome/main/luci-app-adguardhome/po/zh_Hans/adguardhome.po > feeds/luci/applications/luci-app-adguardhome/po/adguardhome.po
 }
 
+TIME() {
+	[[ -z "$1" ]] && {
+		echo -ne " "
+	} || {
+	    case $1 in
+		r) export Color="\e[31m";;
+		g) export Color="\e[32m";;
+		b) export Color="\e[34m";;
+		y) export Color="\e[33m";;
+		z) export Color="\e[35m";;
+		l) export Color="\e[36m";;
+	    esac
+		[[ $# -lt 2 ]] && echo -e "\e[36m\e[0m ${1}" || {
+			echo -e "\e[36m\e[0m ${Color}${2}\e[0m"
+	    }
+	}
+}
 
 ################################################################################################################
 # 判断脚本是否缺少主要文件（如果缺少settings.ini设置文件在检测脚本设置就运行错误了）
@@ -121,19 +138,19 @@ DIY_GET_COMMON_SH
 rm -rf ${Home}/build/QUEWENJIANerros
 if [ -z "$(ls -A "$PATH1/${CONFIG_FILE}" 2>/dev/null)" ]; then
 	echo
-	echo "编译脚本缺少[${CONFIG_FILE}]名称的配置文件,请在[build/${Modelfile}]文件夹内补齐"
+	TIME r "编译脚本缺少[${CONFIG_FILE}]名称的配置文件,请在[build/${Modelfile}]文件夹内补齐"
 	echo "errors" > ${Home}/build/QUEWENJIANerros
 	echo
 fi
 if [ -z "$(ls -A "$PATH1/${DIY_P1_SH}" 2>/dev/null)" ]; then
 	echo
-	echo "编译脚本缺少[${DIY_P1_SH}]名称的自定义设置文件,请在[build/${Modelfile}]文件夹内补齐"
+	TIME r "编译脚本缺少[${DIY_P1_SH}]名称的自定义设置文件,请在[build/${Modelfile}]文件夹内补齐"
 	echo "errors" > ${Home}/build/QUEWENJIANerros
 	echo
 fi
 if [ -z "$(ls -A "$PATH1/${DIY_P2_SH}" 2>/dev/null)" ]; then
 	echo
-	echo "编译脚本缺少[${DIY_P2_SH}]名称的自定义设置文件,请在[build/${Modelfile}]文件夹内补齐"
+	TIME r "编译脚本缺少[${DIY_P2_SH}]名称的自定义设置文件,请在[build/${Modelfile}]文件夹内补齐"
 	echo "errors" > ${Home}/build/QUEWENJIANerros
 	echo
 fi
@@ -150,15 +167,15 @@ fi
 Diy_chajian() {
 DIY_GET_COMMON_SH
 echo
-echo "				插件冲突信息" > ${Home}/CHONGTU
+echo "TIME b \"				插件冲突信息\"" > ${Home}/CHONGTU
 
 if [[ `grep -c "CONFIG_PACKAGE_luci-app-docker=y" ${Home}/.config` -eq '1' ]]; then
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-dockerman=y" ${Home}/.config` -eq '1' ]]; then
 		sed -i 's/CONFIG_PACKAGE_luci-app-dockerman=y/# CONFIG_PACKAGE_luci-app-dockerman is not set/g' ${Home}/.config
 		sed -i 's/CONFIG_PACKAGE_luci-lib-docker=y/# CONFIG_PACKAGE_luci-lib-docker is not set/g' ${Home}/.config
 		sed -i 's/CONFIG_PACKAGE_luci-i18n-dockerman-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-dockerman-zh-cn is not set/g' ${Home}/.config
-		echo " 您同时选择luci-app-docker和luci-app-dockerman，插件有冲突，已删除luci-app-dockerman" >>CHONGTU
-		echo "插件冲突信息" > ${Home}/Chajianlibiao
+		echo "TIME r \"您同时选择luci-app-docker和luci-app-dockerman，插件有冲突，已删除luci-app-dockerman\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
 	fi
 	
 fi
@@ -166,8 +183,8 @@ if [[ `grep -c "CONFIG_PACKAGE_luci-app-autotimeset=y" ${Home}/.config` -eq '1' 
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-autoreboot=y" ${Home}/.config` -eq '1' ]]; then
 		sed -i 's/CONFIG_PACKAGE_luci-app-autoreboot=y/# CONFIG_PACKAGE_luci-app-autoreboot is not set/g' ${Home}/.config
 		sed -i 's/CONFIG_PACKAGE_luci-i18n-autoreboot-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-autoreboot-zh-cn=y is not set/g' ${Home}/.config
-		echo " 您同时选择luci-app-autotimeset和luci-app-autoreboot，插件有冲突，已删除luci-app-autoreboot" >>CHONGTU
-		echo "插件冲突信息" > ${Home}/Chajianlibiao
+		echo "TIME r \"您同时选择luci-app-autotimeset和luci-app-autoreboot，插件有冲突，已删除luci-app-autoreboot\"" >>CHONGTU
+		echo "插件冲突信息\"" > ${Home}/Chajianlibiao
 	fi
 	
 fi
@@ -175,40 +192,40 @@ if [[ `grep -c "CONFIG_PACKAGE_luci-app-advanced=y" ${Home}/.config` -eq '1' ]];
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-filebrowser=y" ${Home}/.config` -eq '1' ]]; then
 		sed -i 's/CONFIG_PACKAGE_luci-app-filebrowser=y/# CONFIG_PACKAGE_luci-app-filebrowser is not set/g' ${Home}/.config
 		sed -i 's/CONFIG_PACKAGE_luci-i18n-filebrowser-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-filebrowser-zh-cn=y is not set/g' ${Home}/.config
-		echo " 您同时选择luci-app-advanced和luci-app-filebrowser，插件有冲突，已删除luci-app-filebrowser" >>CHONGTU
-		echo "插件冲突信息" > ${Home}/Chajianlibiao
+		echo "TIME r \"您同时选择luci-app-advanced和luci-app-filebrowser，插件有冲突，已删除luci-app-filebrowser\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
 	fi
 	
 fi
 if [[ `grep -c "CONFIG_PACKAGE_luci-theme-argon=y" ${Home}/.config` -eq '1' ]]; then
 	if [[ `grep -c "CONFIG_PACKAGE_luci-theme-argon_new=y" ${Home}/.config` -eq '1' ]]; then
 		sed -i 's/CONFIG_PACKAGE_luci-theme-argon_new=y/# CONFIG_PACKAGE_luci-theme-argon_new is not set/g' ${Home}/.config
-		echo " 您同时选择luci-theme-argon和luci-theme-argon_new，插件有冲突，已删除luci-theme-argon_new" >>CHONGTU
-		echo "插件冲突信息" > ${Home}/Chajianlibiao
+		echo "TIME r \"您同时选择luci-theme-argon和luci-theme-argon_new，插件有冲突，已删除luci-theme-argon_new\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
 	fi
 
 fi
 if [[ `grep -c "CONFIG_PACKAGE_luci-app-sfe=y" ${Home}/.config` -eq '1' ]]; then
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-flowoffload=y" ${Home}/.config` -eq '1' ]]; then
-		echo " 提示：您同时选择了luci-app-sfe和luci-app-flowoffload，两个Turbo ACC网络加速" >>CHONGTU
-		echo "插件冲突信息" > ${Home}/Chajianlibiao
+		echo "TIME r \"提示：您同时选择了luci-app-sfe和luci-app-flowoffload，两个ACC网络加速\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
 	fi
 fi
 if [[ `grep -c "CONFIG_TARGET_ROOTFS_EXT4FS=y" .config` -eq '1' ]]; then
-	echo " 请注意，您选择了ext4安装的固件格式" > ${Home}/EXT4
-	echo " 请在Target Images  --->里面的下面两项的数值调整" >> ${Home}/EXT4
-	echo " （16）Kernel partition size (in MB) " >> ${Home}/EXT4
-	echo " （160）Root filesystem partition size (in MB)" >> ${Home}/EXT4
-	echo " 请把（16）Kernel partition size (in MB) 设置成（30）Kernel partition size (in MB) 或者更高数值 " >> ${Home}/EXT4
-	echo " 请把（160）Root filesystem partition size (in MB) 设置成（950）Root filesystem partition size (in MB) 或者更高数值" >> ${Home}/EXT4
-	echo " （160）Root filesystem partition size (in MB) 这项设置数值请避免使用‘128’、‘256’、‘512’、‘1024’等之类的数值" >> ${Home}/EXT4
-	echo " 选择了ext4安装格式的固件，（160）Root filesystem partition size (in MB) 这项数值太低容易造成插件空间不足编译错误" >> ${Home}/EXT4
-	echo " " >> ${Home}/EXT4
+	echo "TIME r \"请注意，您选择了ext4安装的固件格式,请认真看以下说明,避免编译错误\"" > ${Home}/EXT4
+	echo "TIME g \"请在Target Images  --->里面的下面两项的数值调整\"" >> ${Home}/EXT4
+	echo "TIME g \"（16）Kernel partition size (in MB)\"" >> ${Home}/EXT4
+	echo "TIME g \"（160）Root filesystem partition size (in MB)\"" >> ${Home}/EXT4
+	echo "TIME g \"请把（16）Kernel partition size (in MB) 设置成（30）Kernel partition size (in MB) 或者更高数值\"" >> ${Home}/EXT4
+	echo "TIME g \"请把（160）Root filesystem partition size (in MB) 设置成（950）Root filesystem partition size (in MB) 或者更高数值\"" >> ${Home}/EXT4
+	echo "TIME g \"（160）Root filesystem partition size (in MB) 这项设置数值请避免使用‘128’、‘256’、‘512’、‘1024’等之类的数值\"" >> ${Home}/EXT4
+	echo "TIME g \"选择了ext4安装格式的固件，（160）Root filesystem partition size (in MB) 这项数值太低容易造成插件空间不足编译错误\"" >> ${Home}/EXT4
+	echo "TIME g \" \"" >> ${Home}/EXT4
 fi
 if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ]; then
-	echo "" >>CHONGTU
-	echo "   插件冲突会导致编译失败，以上操作如非您所需，请关闭此次编译，重新开始编译，避开冲突重新选择插件" >>CHONGTU
-	echo "" >>CHONGTU
+	echo "TIME z \"\"" >>CHONGTU
+	echo "TIME g \"  插件冲突会导致编译失败，以上操作如非您所需，请关闭此次编译，重新开始编译，避开冲突重新选择插件\"" >>CHONGTU
+	echo "TIME z \"\"" >>CHONGTU
 else
 	rm -rf CHONGTU
 fi
@@ -233,20 +250,6 @@ if [ `grep -c "CONFIG_TARGET_x86_64=y" ${Home}/.config` -eq '1' ]; then
 else
 	TARGET_ADG="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" .config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
 fi
-case "${REPO_BRANCH}" in
-"21.02")
-	echo "Start to convert zh-cn translation files to zh_Hans ..."
-	cd ./package
-	bash ./Convert.sh
-	cd ../
-;;
-"openwrt-21.02") 
-	echo "Start to convert zh-cn translation files to zh_Hans ..."
-	cd ./package
-	bash ./Convert.sh
-	cd ../
-;;
-esac
 rm -rf {LICENSE,README,README.md,CONTRIBUTED.md,README_EN.md}
 rm -rf ./*/{LICENSE,README,README.md}
 rm -rf ./*/*/{LICENSE,README,README.md}
@@ -260,99 +263,101 @@ rm -rf ./*/*/*/{LICENSE,README,README.md}
 Diy_xinxi_Base() {
 GET_TARGET_INFO
 if [[ "${TARGET_PROFILE}" =~ (x86-64|phicomm-k3|d-team_newifi-d2|phicomm_k2p|k2p|phicomm_k2p-32m) ]]; then
-	Firmware_mz="${TARGET_PROFILE}自动适配"
-	Firmware_hz="${TARGET_PROFILE}自动适配"
+	export Firmware_mz="${TARGET_PROFILE}自动适配"
+	export Firmware_hz="${TARGET_PROFILE}自动适配"
 else
-	Firmware_mz="${Up_Firmware}"
-	Firmware_hz="${Firmware_sfx}"
+	export Firmware_mz="${Up_Firmware}"
+	export Firmware_hz="${Firmware_sfx}"
 fi
 if [[ "${Modelfile}" =~ (Lede_phicomm_n1|Project_phicomm_n1) ]]; then
-	TARGET_PROFILE="N1,Vplus,Beikeyun,L1Pro,S9xxx"
+	export TARGET_PROFILE="N1,Vplus,Beikeyun,L1Pro,S9xxx"
 fi
 echo
-echo " 编译源码: ${COMP2}"
-echo " 源码链接: ${REPO_URL}"
-echo " 源码分支: ${REPO_BRANCH}"
-echo " 源码作者: ${ZUOZHE}"
-echo " 编译机型: ${TARGET_PROFILE}"
-echo " 固件作者: ${Author}"
-echo " 仓库地址: ${User_Repo}"
-echo " 启动编号: #${Run_number}（${CangKu}仓库第${Run_number}次启动[${Run_workflow}]工作流程）"
-echo " 编译时间: $(TZ=UTC-8 date "+%Y年%m月%d号-%H时%M分")"
-echo " 您当前使用【${Modelfile}】文件夹编译【${TARGET_PROFILE}】固件"
+TIME b "编译源码: ${COMP2}"
+TIME b "源码链接: ${REPO_URL}"
+TIME b "源码分支: ${REPO_BRANCH}"
+TIME b "源码作者: ${ZUOZHE}"
+TIME b "编译机型: ${TARGET_PROFILE}"
+TIME b "固件作者: ${Author}"
+TIME b "仓库地址: ${User_Repo}"
+TIME b "启动编号: #${Run_number}（${CangKu}仓库第${Run_number}次启动[${Run_workflow}]工作流程）"
+TIME b "编译时间: $(TZ=UTC-8 date "+%Y年%m月%d号-%H时%M分")"
+TIME b "您当前使用【${Modelfile}】文件夹编译【${TARGET_PROFILE}】固件"
 echo
 if [[ ${UPLOAD_FIRMWARE} == "true" ]]; then
-	echo " 上传固件在github actions: 开启"
+	TIME y "上传固件在github actions: 开启"
 else
-	echo " 上传固件在github actions: 关闭"
+	TIME r "上传固件在github actions: 关闭"
 fi
 if [[ ${UPLOAD_CONFIG} == "true" ]]; then
-	echo " 上传[.config]配置文件: 开启"
+	TIME y "上传[.config]配置文件: 开启"
 else
-	echo " 上传[.config]配置文件: 关闭"
+	TIME r "上传[.config]配置文件: 关闭"
 fi
 if [[ ${UPLOAD_BIN_DIR} == "true" ]]; then
-	echo " 上传BIN文件夹(固件+IPK): 开启"
+	TIME y "上传BIN文件夹(固件+IPK): 开启"
 else
-	echo " 上传BIN文件夹(固件+IPK): 关闭"
+	TIME r "上传BIN文件夹(固件+IPK): 关闭"
 fi
 if [[ ${UPLOAD_COWTRANSFER} == "true" ]]; then
-	echo " 上传固件到到【奶牛快传】和【WETRANSFER】: 开启"
+	TIME y "上传固件到到【奶牛快传】和【WETRANSFER】: 开启"
 else
-	echo " 上传固件到到【奶牛快传】和【WETRANSFER】: 关闭"
+	TIME r "上传固件到到【奶牛快传】和【WETRANSFER】: 关闭"
 fi
 if [[ ${UPLOAD_RELEASE} == "true" ]]; then
-	echo " 发布固件: 开启"
+	TIME y "发布固件: 开启"
 else
-	echo " 发布固件: 关闭"
+	TIME r "发布固件: 关闭"
 fi
 if [[ ${SERVERCHAN_SCKEY} == "true" ]]; then
-	echo " 微信/电报通知: 开启"
+	TIME y "微信/电报通知: 开启"
 else
-	echo " 微信/电报通知: 关闭"
+	TIME r "微信/电报通知: 关闭"
 fi
 if [[ ${SSH_ACTIONS} == "true" ]]; then
-	echo " SSH远程连接: 开启"
+	TIME y "SSH远程连接: 开启"
 else
-	echo " SSH远程连接: 关闭"
+	TIME r "SSH远程连接: 关闭"
 fi
 if [[ ${SSHYC} == "true" ]]; then
-	echo " SSH远程连接临时开关: 开启"
+	TIME y "SSH远程连接临时开关: 开启"
 fi
 if [[ ${REGULAR_UPDATE} == "true" ]]; then
 	echo
-	echo " 把定时自动更新插件编译进固件: 开启"
-	echo " 插件版本: ${AutoUpdate_Version}"
-	echo " 固件名称: ${Firmware_mz}"
-	echo " 固件后缀: ${Firmware_hz}"
-	echo " 固件版本: ${Openwrt_Version}"
-	echo " 云端路径: ${Github_UP_RELEASE}"
-	echo " 《编译成功，会自动把固件发布到指定地址，然后才会生成云端路径》"
-	echo " 《5.0版本跟5.2版本的检测机制不一样，首次编译完5.2版本的请手动安装5.2版本编译的固件》"
-	echo " 《普通的那个发布固件跟云端的发布路径是两码事，如果你不需要普通发布的可以不用打开发布功能》"
-	echo " 《请把“REPO_TOKEN”密匙设置好,没设置好密匙不能发布就生成不了云端地址》"
-	echo " 《x86-64、phicomm_k2p、phicomm-k3、newifi-d2已自动适配固件名字跟后缀，无需自行设置》"
-	echo " 《x86设置安装固件时候请最少分配2G内存，要不然内存太低，自动更新不了》"
-	echo " 《如有其他机子可以用定时更新固件的话，请告诉我，我把固件名字跟后缀适配了》"
+	TIME y "把定时自动更新插件编译进固件: 开启"
+	TIME z "插件版本: ${AutoUpdate_Version}"
+	TIME l "固件名称: ${Firmware_mz}"
+	TIME l "固件后缀: ${Firmware_hz}"
+	TIME l "固件版本: ${Openwrt_Version}"
+	TIME l "云端路径: ${Github_UP_RELEASE}"
+	TIME g "《编译成功，会自动把固件发布到指定地址，然后才会生成云端路径》"
+	TIME g "《5.0版本跟5.2版本的检测机制不一样，首次编译完5.2版本的请手动安装5.2版本编译的固件》"
+	TIME g "《普通的那个发布固件跟云端的发布路径是两码事，如果你不需要普通发布的可以不用打开发布功能》"
+	TIME g "《请把“REPO_TOKEN”密匙设置好,没设置好密匙不能发布就生成不了云端地址》"
+	TIME g "《x86-64、phicomm_k2p、phicomm-k3、newifi-d2已自动适配固件名字跟后缀，无需自行设置》"
+	TIME g "《x86设置安装固件时候请最少分配2G内存，要不然内存太低，自动更新不了》"
+	TIME g "《如有其他机子可以用定时更新固件的话，请告诉我，我把固件名字跟后缀适配了》"
 	echo
 else
-	echo " 把定时自动更新插件编译进固件: 关闭"
+	TIME r "把定时自动更新插件编译进固件: 关闭"
 	echo
 fi
 if [ -n "$(ls -A "${Home}/EXT4" 2>/dev/null)" ]; then
-	[ -s EXT4 ] && cat EXT4
+	chmod -R +x ${Home}/EXT4
+	source ${Home}/EXT4
 	rm -rf EXT4
 fi
-echo "  系统空间      类型   总数  已用  可用 使用率"
+TIME z " 系统空间      类型   总数  已用  可用 使用率"
 cd ../ && df -hT $PWD && cd openwrt
 echo
 if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ]; then
 	echo
-	[ -s CHONGTU ] && cat CHONGTU
+	chmod -R +x ${Home}/CHONGTU
+	source ${Home}/CHONGTU
 fi
 if [ -n "$(ls -A "${Home}/Plug-in" 2>/dev/null)" ]; then
 	echo
-	echo "	   已选插件列表"
+	TIME b "	  已选插件列表"
 	[ -s Plug-in ] && cat Plug-in
 	echo
 fi
