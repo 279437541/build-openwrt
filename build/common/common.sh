@@ -66,7 +66,7 @@ sed -i "/exit 0/i\chmod +x /etc/webweb.sh && source /etc/webweb.sh > /dev/null 2
 ################################################################################################################
 Diy_lienol() {
 DIY_GET_COMMON_SH
-rm -rf package/lean/{luci-app-netdata,k3screenctrl}
+rm -rf package/lean/luci-app-netdata
 
 git clone https://github.com/fw876/helloworld package/luci-app-ssr-plus
 git clone https://github.com/xiaorouji/openwrt-passwall package/luci-app-passwall
